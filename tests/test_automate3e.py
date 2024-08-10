@@ -2076,7 +2076,7 @@ def test_chapter14_excel():
 
 
     >>> import openpyxl
-    >>> wb = openpyxl.load_workbook('produceSales3.xlsx')
+    >>> wb = openpyxl.load_workbook('produceSales.xlsx')
     >>> sheet = wb.active
     >>> sheet.freeze_panes = 'A2' # Freeze the rows above A2.
     >>> wb.save('freezeExample3.xlsx')
@@ -2298,6 +2298,81 @@ def test_chapter15_sqlite():
     '''
 
 
+
+def test_chapter17_pdfword():
+    """
+
+    >>> import pypdf
+    >>> writer = pypdf.PdfWriter()
+    >>> writer.append('Recursion_Chapter1.pdf', (0, 5))
+    >>> with open('first_five_pages.pdf', 'wb') as file:
+    ...     writer.write(file)
+    ...
+    (False, <_io.BufferedWriter name='first_five_pages.pdf'>)
+
+    >>> import os;os.unlink('first_five_pages.pdf')  # TEST CLEAN UP
+
+
+
+    >>> list(range(0, 5)) # Passing (0, 5) makes append() copy these pages:
+    [0, 1, 2, 3, 4]
+    >>> list(range(0, 5, 2)) # Passing (0, 5, 2) makes append() copy these pages:
+    [0, 2, 4]
+
+
+    >>> import pypdf
+    >>> writer = pypdf.PdfWriter()
+    >>> writer.append('Recursion_Chapter1.pdf')
+    >>> for i in range(len(writer.pages)):
+    ...   DUMMY = writer.pages[i].rotate(90)
+    ...
+    >>> with open('rotated.pdf', 'wb') as file:
+    ...   writer.write(file)
+    ...
+    (False, <_io.BufferedWriter name='rotated.pdf'>)
+
+    >>> import os;os.unlink('rotated.pdf')  # TEST CLEAN UP
+
+
+
+
+    >>> import pypdf
+    >>> writer = pypdf.PdfWriter()
+    >>> writer.append('Recursion_Chapter1.pdf')
+    >>> DUMMY = writer.add_blank_page()
+    >>> writer.insert_blank_page(index=2)
+    {'/Type': '/Page', '/Parent': NullObject, '/Resources': {}, '/MediaBox': RectangleObject([0.0, 0.0, 546, 708])}
+    >>> with open('with_blanks.pdf', 'wb') as file:
+    ...   writer.write(file) # Save the writer object to a PDFfile.
+    ...
+    (False, <_io.BufferedWriter name='with_blanks.pdf'>)
+
+
+    >>> import os;os.unlink('with_blanks.pdf')  # TEST CLEAN UP
+
+
+
+
+    >>> import pypdf
+    >>> writer = pypdf.PdfWriter()
+    >>> writer.append('Recursion_Chapter1.pdf')
+    >>> watermark_page = pypdf.PdfReader('watermark.pdf').pages[0]
+    >>> for page in writer.pages:
+    ...     page.merge_page(watermark_page, over=False)
+    ...
+    >>> with open('with_watermark.pdf', 'wb') as file:
+    ...     writer.write(file)
+    ...
+    (False, <_io.BufferedWriter name='with_watermark.pdf'>)
+
+
+    >>> import os;os.unlink('with_watermark.pdf')  # TEST CLEAN UP
+
+
+
+
+
+"""
 
 if __name__ == '__main__':
     doctest.testmod()
