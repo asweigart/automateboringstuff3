@@ -2301,7 +2301,6 @@ def test_chapter15_sqlite():
 
 def test_chapter17_pdfword():
     """
-
     >>> import pypdf
     >>> writer = pypdf.PdfWriter()
     >>> writer.append('Recursion_Chapter1.pdf', (0, 5))
@@ -2372,7 +2371,47 @@ def test_chapter17_pdfword():
 
 
 
+    >>> import pypdf
+    >>> writer = pypdf.PdfWriter()
+    >>> writer.append('Recursion_Chapter1.pdf')
+    >>> writer.encrypt('swordfish', algorithm='AES-256')
+    >>> with open('encrypted.pdf', 'wb') as file:
+    ...   writer.write(file)
+    ...
+    (False, <_io.BufferedWriter name='encrypted.pdf'>)
+
+
+
+
+    >>> import pypdf
+    >>> reader = pypdf.PdfReader('encrypted.pdf')
+    >>> writer = pypdf.PdfWriter()
+    >>> reader.is_encrypted
+    True
+    >>> try:  # TEST SET UP
+    ...   reader.pages[0]
+    ... except:
+    ...   pass # pypdf.errors.FileNotDecryptedError: File has not been decrypted
+    ...
+    >>> reader.decrypt('an incorrect password').name
+    'NOT_DECRYPTED'
+    >>> reader.decrypt('swordfish').name
+    'OWNER_PASSWORD'
+    >>> writer.append(reader)
+    >>> with open('decrypted.pdf', 'wb') as file:
+    ...   writer.write(file)
+    ...
+    (False, <_io.BufferedWriter name='decrypted.pdf'>)
+
+    >>> import os;os.unlink('decrypted.pdf')  # TEST CLEAN UP
+
+
+
 """
+
+    # TODO: Test "Project: Combining Select Pages from Many PDFs"
+
+
 
 if __name__ == '__main__':
     doctest.testmod()
